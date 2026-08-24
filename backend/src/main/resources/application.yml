@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: listing-ai
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/listing_ai}
+    username: ${DATABASE_USERNAME:listing_ai}
+    password: ${DATABASE_PASSWORD:change-me}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+  session:
+    store-type: jdbc
+    timeout: 30m
+
+  flyway:
+    enabled: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid,email,profile
+
+app:
+  frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:3000}
+  security:
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
+
+server:
+  port: ${PORT:8080}

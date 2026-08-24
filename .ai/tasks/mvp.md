@@ -1,0 +1,23 @@
+# MVP Task Map
+
+- [ ] Repository bootstrap
+- [ ] Spring Boot backend
+- [ ] Next.js frontend
+- [ ] PostgreSQL migrations
+- [ ] Authentication
+- [ ] User/profile
+- [ ] Project CRUD
+- [ ] Image upload
+- [ ] Object storage adapter
+- [ ] Listing generation
+- [ ] Listing validation
+- [ ] Generation history
+- [ ] Image generation
+- [ ] Credit ledger
+- [ ] Plan entitlements
+- [ ] Stripe checkout
+- [ ] Stripe webhooks
+- [ ] Dashboard
+- [ ] Error handling
+- [ ] Tests
+- [ ] Deployment

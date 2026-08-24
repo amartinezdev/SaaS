@@ -1,0 +1,6 @@
+{
+  "project": "3d-listing-ai",
+  "generated": true,
+  "purpose": "AI-assisted SaaS architecture and project brain scaffold",
+  "note": "Provider model IDs, pricing, platform rules and production credentials must be verified before production use."
+}

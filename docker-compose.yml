@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: listing-ai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: listing_ai
+      POSTGRES_USER: listing_ai
+      POSTGRES_PASSWORD: change-me
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U listing_ai -d listing_ai"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Optional local S3-compatible storage for development.
+  # Enable when implementing the storage adapter.
+  minio:
+    image: minio/minio:latest
+    container_name: listing-ai-minio
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: change-me-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  postgres_data:
+  minio_data:

@@ -1,0 +1,1 @@
+# Thingiverse\n\nThingiverse profile placeholder. Validate current official limits, fields, tags and publishing/API capabilities before implementation.\n\nDo not encode assumptions as facts.\n
