@@ -20,6 +20,13 @@ Generate Promotional Image
 Save
   ↓
 Download/Copy
+  ↓
+Select creator-provided .3mf and review MakerWorld fields
+  ↓
+Fill MakerWorld form through a browser-side adapter
+  ↓
+Creator confirms publication
 ```
 
-Future flows will add platform-specific exports and bulk generation.
+The MakerWorld upload flow and permitted automation must be validated before this step is built.
+Future flows will add other marketplace adapters and bulk generation.

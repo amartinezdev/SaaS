@@ -5,7 +5,7 @@
 Run:
 
 ```bash
-docker compose up -d postgres minio
+docker compose up -d postgres s3mock
 ```
 
 Frontend:
@@ -20,27 +20,25 @@ Backend:
 
 ```bash
 cd backend
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 Windows PowerShell can use:
 
 ```powershell
-.\mvnw.cmd spring-boot:run
+mvn spring-boot:run
 ```
 
 ## Staging
 
-- Vercel frontend
-- Railway Spring Boot backend
+- Railway Spring Boot application (includes static frontend)
 - Railway PostgreSQL
 - test-mode Stripe
 - staging storage bucket
 
 ## Production
 
-- Vercel frontend
-- Railway Spring Boot backend
+- Railway Spring Boot application (includes static frontend)
 - dedicated Railway PostgreSQL
 - live Stripe
 - production storage bucket

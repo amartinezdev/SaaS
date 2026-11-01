@@ -5,7 +5,7 @@
 - [ ] Bulk generation
 - [ ] STL analysis
 - [ ] Social post generation
-- [ ] Direct publishing integrations
+- [ ] Assisted publishing adapters for additional marketplaces
 - [ ] Usage analytics
 - [ ] API
 - [ ] Team accounts

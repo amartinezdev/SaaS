@@ -1,16 +1,24 @@
 package com.example.listingai.auth;
 
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import com.example.listingai.user.User;
+import com.example.listingai.user.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    private final UserService users;
+
+    public AuthController(UserService users) {
+        this.users = users;
+    }
 
     /**
      * Forces Spring Security to resolve the CSRF token and expose the cookie
@@ -21,17 +29,11 @@ public class AuthController {
         return token;
     }
 
-    /**
-     * Returns the raw Google profile of the authenticated session.
-     * Replace with the persisted User (keyed by google_sub, see .ai/domain/users.md)
-     * once the user entity/repository exists — see .ai/state/next.md, Priority 1.
-     */
     @GetMapping("/me")
-    public Map<String, Object> me(OAuth2User principal) {
-        return Map.of(
-            "sub", principal.getAttribute("sub"),
-            "email", principal.getAttribute("email"),
-            "name", principal.getAttribute("name")
-        );
+    public CurrentUserResponse me(@AuthenticationPrincipal OidcUser principal) {
+        User user = users.getByGoogleSub(principal.getSubject());
+        return new CurrentUserResponse(user.getId(), user.getEmail(), user.getName());
     }
+
+    public record CurrentUserResponse(UUID id, String email, String name) {}
 }

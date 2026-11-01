@@ -1,4 +1,31 @@
 services:
+  app:
+    build: .
+    image: listing-ai:local
+    container_name: listing-ai-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/listing_ai
+      DATABASE_USERNAME: listing_ai
+      DATABASE_PASSWORD: change-me
+      STORAGE_ENDPOINT: http://s3mock:9090
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-local-preview-client}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-local-preview-secret}
+      INITIAL_FREE_CREDITS: ${INITIAL_FREE_CREDITS:-1}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      AI_MODEL_TEXT: ${AI_MODEL_TEXT:-gemini-3.5-flash-lite}
+      AI_LISTING_DAILY_LIMIT: ${AI_LISTING_DAILY_LIMIT:-5}
+      AI_TEXT_INPUT_USD_PER_MILLION: ${AI_TEXT_INPUT_USD_PER_MILLION:-0.30}
+      AI_TEXT_OUTPUT_USD_PER_MILLION: ${AI_TEXT_OUTPUT_USD_PER_MILLION:-2.50}
+      SESSION_COOKIE_SECURE: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      s3mock:
+        condition: service_started
+
   postgres:
     image: postgres:17
     container_name: listing-ai-postgres
@@ -8,7 +35,7 @@ services:
       POSTGRES_USER: listing_ai
       POSTGRES_PASSWORD: change-me
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -17,22 +44,19 @@ services:
       timeout: 5s
       retries: 10
 
-  # Optional local S3-compatible storage for development.
-  # Enable when implementing the storage adapter.
-  minio:
-    image: minio/minio:latest
-    container_name: listing-ai-minio
-    command: server /data --console-address ":9001"
+  s3mock:
+    image: adobe/s3mock:5.2.3
+    container_name: listing-ai-s3mock
     restart: unless-stopped
     environment:
-      MINIO_ROOT_USER: minio
-      MINIO_ROOT_PASSWORD: change-me-minio
+      COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: listing-ai
+      COM_ADOBE_TESTING_S3MOCK_STORE_ROOT: /s3mockroot
+      COM_ADOBE_TESTING_S3MOCK_STORE_RETAIN_FILES_ON_EXIT: "true"
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9090:9090"
     volumes:
-      - minio_data:/data
+      - s3mock_data:/s3mockroot
 
 volumes:
   postgres_data:
-  minio_data:
+  s3mock_data:

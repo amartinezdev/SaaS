@@ -36,3 +36,6 @@ validate
 Maximum retry count must be finite.
 
 If validation remains unsuccessful, return a controlled error rather than silently producing bad data.
+
+The MVP listing flow currently makes one provider attempt and no correction retry to cap cost;
+an invalid draft returns a controlled error and refunds the reserved credit.

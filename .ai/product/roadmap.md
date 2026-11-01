@@ -12,6 +12,8 @@
 - Stripe
 - storage
 - deployment
+- assisted MakerWorld publication of a creator-provided `.3mf` and generated listing,
+  subject to validating the platform's current upload flow and permitted automation
 
 ## V1
 
@@ -25,7 +27,8 @@
 ## V2
 
 - STL analysis
-- direct publishing where officially supported
+- additional assisted browser publishing adapters (for example MakerOnline and Creality),
+  validated per platform
 - API
 - team accounts
 - advanced analytics

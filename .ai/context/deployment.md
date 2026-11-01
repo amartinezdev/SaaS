@@ -4,22 +4,22 @@
 
 Use **Railway** for the Spring Boot backend and PostgreSQL in the MVP.
 
-Use **Vercel** for the Next.js frontend.
+Build the Next.js frontend as static files inside the Spring Boot application service.
 
 Use one GitHub repository containing both applications.
 
 ## Why Railway
 
-Railway supports Spring Boot deployment from GitHub and provides managed PostgreSQL with
-`DATABASE_URL` service references. It also supports multiple environments and deployment
+Railway supports Dockerfile deployment from GitHub and provides PostgreSQL connection
+variables. It also supports multiple environments and deployment
 configuration.
 
 This is intentionally simpler than AWS for the first version.
 
-## Why Vercel
+## Why a single application origin
 
-Next.js is the frontend framework, and Vercel provides a straightforward deployment model
-for Next.js with preview deployments and production deployments.
+The frontend needs no Next.js server in the MVP. Spring Boot serves its static export and
+the API on one origin. This avoids a second hosting plan and cross-origin session handling.
 
 ## Environments
 
@@ -35,11 +35,15 @@ production
 
 Developer machine.
 
+`docker compose up -d --build` starts the application, PostgreSQL, and S3Mock. The
+application uses preview OAuth credentials if none are configured; sign-in requires real
+Google credentials.
+
 ```text
-Next.js       http://localhost:3000
-Spring Boot   http://localhost:8080
-PostgreSQL    localhost:5432
-MinIO         localhost:9000
+Next.js dev   http://localhost:3000 (optional)
+Spring Boot   http://localhost:8080 (serves the bundled frontend in a production build)
+PostgreSQL    localhost:5433
+S3Mock        localhost:9090
 ```
 
 ### Staging
@@ -55,7 +59,6 @@ Suggested domains:
 
 ```text
 staging.<domain>
-api-staging.<domain>
 ```
 
 ### Production
@@ -66,7 +69,6 @@ Suggested domains:
 
 ```text
 <domain>
-api.<domain>
 ```
 
 ## Railway structure
@@ -85,24 +87,15 @@ Environment: production
 
 Do not share a production database with staging.
 
-Railway's PostgreSQL service exposes a `DATABASE_URL` variable that can be referenced by the
-backend service.
+Railway's PostgreSQL service exposes `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, and
+`PGPASSWORD`. Configure the application `DATABASE_URL` as a JDBC URL using those values.
 
-## Frontend deployment
+## Application deployment
 
-Vercel:
-
-- production deployment from `main`;
-- preview deployments for pull requests;
-- staging can be a dedicated Vercel environment/domain if required.
-
-The frontend receives:
-
-```text
-NEXT_PUBLIC_API_BASE_URL
-```
-
-This is not a secret.
+The root Dockerfile builds the Next.js static export, copies it into Spring Boot static
+resources, and produces one runtime image. Set the Railway application service's build
+context to the repository root and use the root Dockerfile. The frontend calls relative
+`/api` paths in deployed environments; no public API base URL is required.
 
 ## Backend environment variables
 
@@ -113,9 +106,7 @@ DATABASE_URL
 DATABASE_USERNAME
 DATABASE_PASSWORD
 
-APP_BASE_URL
-FRONTEND_BASE_URL
-ALLOWED_ORIGINS
+ALLOWED_ORIGINS (empty in production; local dev only)
 
 GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET
@@ -131,6 +122,7 @@ STORAGE_ENDPOINT
 STORAGE_BUCKET
 STORAGE_ACCESS_KEY
 STORAGE_SECRET_KEY
+STORAGE_REGION
 
 SESSION_COOKIE_SECURE
 SESSION_COOKIE_SAME_SITE
@@ -142,7 +134,7 @@ Do not commit real values.
 
 Use a migration tool such as Flyway.
 
-Migrations run as part of deployment/pre-deploy.
+Flyway migrations run when the application starts.
 
 Do not use Hibernate `ddl-auto=update` in staging/production.
 
@@ -157,7 +149,7 @@ GitHub Actions:
 Deployment:
 
 - Railway can auto-deploy connected GitHub services;
-- Vercel can auto-deploy the frontend.
+- the frontend is deployed with the Railway application service.
 
 Production deployment should happen from `main`.
 
@@ -194,8 +186,7 @@ If a deployment is broken:
 
 Secrets are configured in:
 
-- local `.env` for development;
-- Railway environment variables for backend staging/production;
-- Vercel environment variables for frontend.
+- local environment variables for development (using the `.env.example` template);
+- Railway environment variables for the application and database.
 
 Never put secrets into GitHub Actions source files.

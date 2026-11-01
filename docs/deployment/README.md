@@ -2,14 +2,11 @@
 
 ## Target MVP
 
-Frontend:
-Vercel or equivalent.
-
-Backend:
-managed Java/Spring Boot host or container host.
+Application:
+Railway Spring Boot service serving the static Next.js frontend and API from one origin.
 
 Database:
-managed PostgreSQL.
+separate Railway PostgreSQL service.
 
 Storage:
 Cloudflare R2/S3-compatible.

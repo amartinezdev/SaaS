@@ -7,6 +7,7 @@
 Primary input for MVP:
 
 - model image/render
+- creator-provided `.3mf` for assisted marketplace publishing (not AI analysis)
 
 Future inputs:
 
@@ -23,6 +24,7 @@ Future inputs:
 - keywords
 - category
 - promotional images
+- assisted MakerWorld listing publication with the creator's `.3mf`, after platform validation
 
 Future outputs:
 
@@ -30,7 +32,7 @@ Future outputs:
 - social posts
 - video concepts
 - bulk exports
-- direct publishing integrations
+- assisted publishing on additional platforms
 
 ## Target user
 

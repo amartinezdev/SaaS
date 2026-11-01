@@ -3,6 +3,7 @@
 ## Frontend
 
 - Next.js
+- static export, bundled into the Spring Boot application for deployment
 - TypeScript
 - React
 - Tailwind CSS
@@ -22,7 +23,7 @@
 ## Storage
 
 - Cloudflare R2 or S3-compatible storage
-- MinIO locally
+- S3Mock locally
 
 ## Billing
 
@@ -37,7 +38,7 @@
 
 - Docker Compose
 - PostgreSQL
-- MinIO
+- S3Mock
 
 ## CI/CD
 
@@ -47,6 +48,9 @@ Future target:
 - automated tests
 - build
 - deployment
+
+The production build uses a root Dockerfile with Node.js and Maven build stages. Only the
+Spring Boot runtime is deployed; there is no separate Next.js server.
 
 ## Rule
 

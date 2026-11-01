@@ -27,3 +27,7 @@ FAILED
 CANCELLED
 
 A failed generation must not accidentally consume a permanent credit unless explicitly defined.
+
+The initial synchronous text flow records PROCESSING, COMPLETED or FAILED. Completed rows
+store token usage, estimated USD cost and one consumed credit. Failed rows store a safe error
+code, usage/cost when available, and zero net credits after the idempotent refund.

@@ -5,11 +5,11 @@
 Use a modular monolith.
 
 ```text
-Next.js
+Browser
    |
  HTTPS
    |
-Spring Boot API
+Spring Boot (static Next.js export + API)
    |
    +-- PostgreSQL
    +-- Object Storage
@@ -19,9 +19,8 @@ Spring Boot API
 
 ## Frontend
 
-Next.js + TypeScript + React + Tailwind CSS.
-
-The browser calls the Spring Boot API directly in the MVP.
+Next.js static export + TypeScript + React. Spring Boot serves the exported files and API
+from the same origin in deployed environments. A separate Next.js dev server is optional locally.
 
 Authentication uses a Spring Security session cookie.
 
@@ -98,8 +97,7 @@ Object storage stores:
 
 MVP target:
 
-- Next.js: Vercel
-- Spring Boot: Railway
+- Next.js static export and Spring Boot: one Railway application service
 - PostgreSQL: Railway
 - Storage: Cloudflare R2/S3-compatible storage
 - Stripe: hosted billing

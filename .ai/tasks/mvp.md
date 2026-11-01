@@ -21,3 +21,5 @@
 - [ ] Error handling
 - [ ] Tests
 - [ ] Deployment
+- [ ] Validate MakerWorld publishing rules and `.3mf` upload flow
+- [ ] Assisted MakerWorld publishing component with creator review before submission

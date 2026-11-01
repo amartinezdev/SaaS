@@ -31,3 +31,7 @@ Possible entitlements:
 - bulk generation
 
 These are hypotheses, not permanent requirements.
+
+The database currently seeds the three plan identities. New users start on FREE with one
+trial credit by default. CREATOR and PRO have no credit allocation or payment activation
+until pricing and Stripe are implemented. Plan changes must be made by the backend.

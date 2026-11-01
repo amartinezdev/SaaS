@@ -1,0 +1,12 @@
+.git
+.ai
+.env
+.env.*
+**/.env
+**/.env.*
+frontend/node_modules
+frontend/.next
+frontend/out
+backend/target
+docs
+github

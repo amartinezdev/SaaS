@@ -17,6 +17,9 @@ Required concepts:
 - plan/subscription relationship
 - timestamps
 
+The current user API returns the internal `id`, email and name. It never returns `google_sub`.
+Email and name may be null if the provider omits them.
+
 There is no password field. The `User` entity never stores or hashes credentials.
 
 ## Why key by `google_sub` and not email
@@ -28,6 +31,8 @@ splitting their projects, credits and subscription across two identities.
 ## Provisioning
 
 On first login, find-or-create a `User` by `google_sub`. Do not create a new user per login.
+New users receive a FREE subscription and an idempotent initial credit grant in the same
+database transaction. Migration V4 backfills these records for existing users.
 
 Never trust a user ID supplied by the client when determining ownership. Derive authenticated
 identity from the security context (the Spring Security session), never from a request body or

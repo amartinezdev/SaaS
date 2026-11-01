@@ -2,8 +2,13 @@ spring:
   application:
     name: listing-ai
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
+
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/listing_ai}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/listing_ai}
     username: ${DATABASE_USERNAME:listing_ai}
     password: ${DATABASE_PASSWORD:change-me}
 
@@ -29,9 +34,32 @@ spring:
             scope: openid,email,profile
 
 app:
-  frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:3000}
   security:
-    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
+    allowed-origins: ${ALLOWED_ORIGINS:}
+  storage:
+    endpoint: ${STORAGE_ENDPOINT:http://localhost:9090}
+    bucket: ${STORAGE_BUCKET:listing-ai}
+    access-key: ${STORAGE_ACCESS_KEY:local-s3}
+    secret-key: ${STORAGE_SECRET_KEY:local-s3-secret}
+    region: ${STORAGE_REGION:us-east-1}
+  uploads:
+    max-image-bytes: 10485760
+  credits:
+    initial-free: ${INITIAL_FREE_CREDITS:1}
+  ai:
+    gemini-api-key: ${GEMINI_API_KEY:}
+    text-model: ${AI_MODEL_TEXT:gemini-3.5-flash-lite}
+    gemini-base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com}
+    text-input-usd-per-million: ${AI_TEXT_INPUT_USD_PER_MILLION:0.30}
+    text-output-usd-per-million: ${AI_TEXT_OUTPUT_USD_PER_MILLION:2.50}
+    listing-daily-limit: ${AI_LISTING_DAILY_LIMIT:5}
 
 server:
   port: ${PORT:8080}
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: ${SESSION_COOKIE_SECURE:false}
+        same-site: ${SESSION_COOKIE_SAME_SITE:lax}

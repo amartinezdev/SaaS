@@ -10,7 +10,8 @@ AI SaaS for turning 3D models into ready-to-publish listings and promotional ass
 - Storage: S3-compatible object storage / Cloudflare R2
 - Billing: Stripe
 - AI: provider abstraction with Gemini and a free/open-source image provider
-- Deployment target: Vercel + managed Spring Boot host + managed PostgreSQL + object storage
+- Deployment target: one Railway Spring Boot service (including the static frontend),
+  separate Railway PostgreSQL, and object storage
 
 ## Repository brain
 
@@ -31,15 +32,23 @@ The structured project knowledge base is under `.ai/`.
 ## Local development
 
 1. Copy `.env.example` to `.env`.
-2. Start infrastructure: `docker compose up -d postgres minio`.
-3. Start Spring Boot on `http://localhost:8080`.
-4. Start Next.js on `http://localhost:3000`.
+2. Start the application and local infrastructure: `docker compose up -d --build`.
+3. Open `http://localhost:8080`.
+4. Optionally start the Next.js development server on `http://localhost:3000` after copying
+   `frontend/.env.example` to `frontend/.env.local`.
 5. Use `.ai/context/authentication.md` for the session/CSRF flow.
 
 Detailed setup: `docs/deployment/local.md`.
+
+Production deployment uses the root `Dockerfile` to bundle both applications into one
+Spring Boot runtime image.
 
 ## MVP
 
 The first milestone is:
 
-Upload image → analyze → generate title/description/tags → generate promotional image → save/export.
+Upload model image → analyze → generate title/description/tags → generate promotional image →
+review → assist publication of the creator's `.3mf` and listing on MakerWorld.
+
+The marketplace publishing step needs validation of MakerWorld's current form and rules;
+the browser automation component has not been implemented yet.

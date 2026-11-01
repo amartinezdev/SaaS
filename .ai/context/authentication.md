@@ -13,23 +13,20 @@ Do not use JWTs for the MVP.
 
 ## Browser architecture
 
-The browser/Next.js application calls the Spring Boot API directly.
+The browser loads the static Next.js export from Spring Boot and calls its API on the same origin.
 
 ```text
 Browser
    |
    | HTTPS
    v
-Next.js frontend ---------> Spring Boot API
-                                |
-                                +--> Google OAuth2 (login only, not the session)
-                                |
-                                +--> PostgreSQL
-                                |
-                                +--> Session store
+Spring Boot (static frontend + API)
+   |
+   +--> Google OAuth2 (login only, not the session)
+   +--> PostgreSQL and session store
 ```
 
-Next.js is NOT a BFF in the MVP.
+Next.js is not a BFF or a production server in the MVP.
 
 Reason (unchanged from the original decision — see [`../decisions/ADR-005-authentication.md`](../decisions/ADR-005-authentication.md)):
 
@@ -56,7 +53,7 @@ Spring Security verifies the code with Google,
 resolves the user's Google profile (sub, email, name),
 provisions/loads the local User record,
 establishes a session (Spring Session JDBC),
-redirects to FRONTEND_BASE_URL
+redirects to / on the same application origin
 ```
 
 The backend never sees or stores a password. There is no `/api/auth/register` or
@@ -96,10 +93,10 @@ Flow:
 GET /api/auth/csrf
         |
         v
-Spring Security sets CSRF cookie
+Spring Security sets a CSRF cookie and returns the token in JSON
         |
         v
-Next.js reads CSRF cookie
+Next.js keeps the returned token in memory
         |
         v
 Mutating request sends:
@@ -111,7 +108,8 @@ The CSRF cookie itself is not the authentication credential.
 
 ## CORS
 
-The backend must allow only configured frontend origins.
+Deployed frontend and API share an origin, so CORS is not needed for the normal browser flow.
+The local development server is allowed explicitly at `http://localhost:3000`.
 
 Local:
 
@@ -119,19 +117,7 @@ Local:
 http://localhost:3000
 ```
 
-Staging:
-
-```text
-https://staging.<domain>
-```
-
-Production:
-
-```text
-https://<domain>
-```
-
-Never use `*` with credentialed requests.
+Never use `*` with credentialed requests or allow a development origin in production.
 
 The frontend uses:
 
@@ -149,7 +135,7 @@ Current API:
 GET  /oauth2/authorization/google   (login — browser redirect, not fetch)
 GET  /api/auth/me                   (current user, 401 if not authenticated)
 GET  /api/auth/csrf
-POST /logout                        (Spring Security default logout endpoint)
+POST /logout                        (invalidates session; returns 204)
 ```
 
 ## Authorization
@@ -232,11 +218,11 @@ provider behind the same session model, via a new ADR — do not silently bolt i
 
 ## Deployment implication
 
-Frontend and backend may be on different origins.
+The deployed frontend and backend use one origin. Local development may use separate ports.
 
 The backend must therefore have explicit:
 
-- allowed origins;
+- the local development origin, when applicable;
 - credentialed CORS;
 - CSRF configuration;
 - cookie configuration;
